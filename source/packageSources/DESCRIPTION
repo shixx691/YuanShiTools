@@ -1,0 +1,16 @@
+Package: YuanShiTools
+Title: Tools for STAT 3701
+Version: 0.0.1
+Authors@R: person("Yuan", "Shi", email = "shixx691@umn.edu", role = c("aut", "cre"))
+Description: This is a set of functions, etc for STAT 370 class.
+Depends: R (>= 3.2.3)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+Suggests: testthat,
+    knitr,
+    rmarkdown
+Imports: ggplot2,
+    magrittr
+VignetteBuilder: knitr
