@@ -162,3 +162,164 @@ func7 <- function(x, func, interval){
   return(oout$maximum)
 } 
 
+#' wrapper for acquiring marginals and other slices of data data2007
+#'
+#'select two speific rows and compute the product
+#'@param x data.frame
+#'
+#' @return list
+#' @export
+
+selectmydata<-function(x){
+  library(magrittr)
+  library(tidyverse)
+  xa<-data2007%>%
+    select(gdpPercap, pop) %>% 
+    mutate(gdp = pop * gdpPercap)
+  return(xa)}
+  
+#' quiz 2 function 1 
+#' 
+#' Write an R function that, given a numeric matrix A and a numeric vector x, calculates xTA−1x
+#' 
+#' @param a matrix
+#' @param x vector
+#' 
+#' @return object
+#' @export
+#' @example
+#' load(url("http://www.stat.umn.edu/geyer/3701/data/q2p1.rda"))
+#' fun1(a, x)
+
+fun1 <- function(a, x) {
+  stopifnot(is.matrix(a))
+  stopifnot(is.numeric(a))
+  stopifnot(is.numeric(x))
+  stopifnot(!is.na(x))
+  stopifnot(!is.na(a))
+  stopifnot(!is.nan(a))
+  stopifnot(!is.nan(x))
+  stopifnot(is.finite(x))
+  stopifnot(is.finite(a))
+  stopifnot(nrow(a) == ncol(a)) #the number of rows and colons should be the same if a is a square matrix
+  stopifnot(nrow(a) == length(x))
+  y <- solve(a, x)
+  sum(x * y)}
+
+#' quiz 2 function 2 
+#' 
+#' rewrite function for the preceding problem so it is a binary operator rather than an apparent function call, that is, if your function from the preceding problem was invoked
+#' 
+#' @param a matrix
+#' @param x vector
+#' 
+#' @return object
+#' @export
+
+`%fun2%` <- function(a, x) {
+  stopifnot(is.matrix(a))
+  stopifnot(is.numeric(a))
+  stopifnot(is.numeric(x))
+  stopifnot(!is.na(x))
+  stopifnot(!is.na(a))
+  stopifnot(!is.nan(a))
+  stopifnot(!is.nan(x))
+  stopifnot(is.finite(x))
+  stopifnot(is.finite(a))
+  stopifnot(nrow(a) == ncol(a)) #the number of rows and colons should be the same if a is a square matrix
+  stopifnot(nrow(a) == length(x))
+  y <- solve(a, x)
+  sum(x * y)
+}
+
+
+#' quiz 2 function 3 
+#' 
+#' Write a function that takes a numeric matrix and standardizes its columns as (x−mean(x))/sd(x).
+#' 
+#' @param a matrix
+#' 
+#' @return matrix
+#' @export
+
+fun3 <- function(a) 
+{
+  stopifnot(!is.na(a))
+  stopifnot(!is.nan(a))
+  stopifnot(is.finite(a))
+  stopifnot(is.matrix(a))
+  stopifnot(is.numeric(a))
+  #since no deduction for loops, I m using it
+  for (i in 1:ncol(a))#number of colons
+  {
+    tempA <- a[ , i]
+    a[ , i] <- (tempA - mean(tempA)) / sd(tempA) #stardlize each value in each colon
+  }    
+  return(a)
+}
+
+#' Homework 2 q4 function
+#' 
+#' Try your function myapply on all of the example
+#' 
+#' @param a matrix
+#' 
+#' @return matrix
+#' @export
+
+fun <- function(a) 
+{
+  stopifnot(!is.na(a))
+  stopifnot(!is.nan(a))
+  stopifnot(is.finite(a))
+  stopifnot(is.matrix(a))
+  stopifnot(is.numeric(a))
+  tempfun <- function(x)
+  {
+    (x - mean(x))/sd(x)
+  }
+  apply(a,2,tempfun)
+} 
+
+#' Homework 2 q5 function
+#' 
+#' question 5 
+#' @param x matrix
+#' @param MARGIN margin of object you want to work on
+#' @param FUN function
+#' @export
+
+myapply <- function(X, MARGIN, FUN, ...)
+{
+  
+  stopifnot(length(dim(X))==2)
+  
+  if(length(dim(X))!=2)
+  {
+    stop("matrix is not 2d")
+  } 
+  if(!(MARGIN %in% c(1,2)))
+  {
+    stop("margin is not in 1 or 2")
+  }
+  R = dim(X)[1]
+  C = dim(X)[2]
+  f = match.fun(FUN)
+  
+  if (MARGIN == 1)
+  {
+    result = list()
+    for(i in 1:R)
+    {
+      result[[i]] = f(X[i,],...)
+    }
+  }else if(MARGIN == 2)
+  {
+    result = list()
+    for(j in 1:C)
+    {
+      result[[j]] = f(X[,j],...)
+    }
+  }
+  return(simplify2array(result))
+}
